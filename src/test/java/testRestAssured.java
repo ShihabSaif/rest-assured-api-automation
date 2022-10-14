@@ -76,6 +76,4 @@ public class testRestAssured {
         then().
                 statusCode(204);
     }
-
-
 }
