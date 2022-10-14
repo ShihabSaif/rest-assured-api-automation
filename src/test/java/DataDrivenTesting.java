@@ -16,9 +16,9 @@ public class DataDrivenTesting extends DataProviderForDDT {
 
         given().
                 body(requestBody.toJSONString()).
-                when().
+        when().
                 post("https://reqres.in/api/users").
-                then().
+        then().
                 statusCode(201);
     }
 
@@ -26,7 +26,7 @@ public class DataDrivenTesting extends DataProviderForDDT {
     void test_DELETE(int id) {
         given().
                 delete("https://reqres.in/api/users/" + id).
-                then().
+        then().
                 statusCode(204);
     }
 }
