@@ -28,6 +28,22 @@ public class testRestAssured {
     }
 
     @Test
+    void test03_01_POST() {
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("name", "shihab");
+        requestBody.put("job", "SQA");
+
+        Response response = post("https://reqres.in/api/users");
+
+        given().
+                body(requestBody.toJSONString()).
+        when().
+                post("https://reqres.in/api/users").
+        then().
+                statusCode(201);
+    }
+
+    @Test
     void test03_POST() {
         JSONObject requestBody = new JSONObject();
         requestBody.put("name", "shihab");
