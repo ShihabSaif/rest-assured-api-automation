@@ -116,4 +116,30 @@ public class TallyKhata {
                 statusCode(400).
                 log().all();
     }
+
+    @Test
+    void test_send_money() {
+        JSONObject requestBody = new JSONObject();
+
+        requestBody.put("amount", 10);
+        requestBody.put("credential", "9316");
+        requestBody.put("location", null);
+        requestBody.put("note", null);
+        requestBody.put("receiver", "01765841854");
+        requestBody.put("fpAuth", false);
+        requestBody.put("is_fp_auth", false);
+        requestBody.put("request_id", "1261180152803_2469");
+        requestBody.put("charge_flag", null);
+        requestBody.put("receiver_wallet_no", "01765841854");
+
+        given().
+                header("content-type", "application/json").
+                header("Authorization", "token eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUU0ROZVZtSlVmVFRvak96MHNQRU4zdnBfbXNWTk9JSUR0RHlrVzFaSS1ZIn0.eyJleHAiOjE2NjU4OTcyMjcsImlhdCI6MTY2NTg5NjkyNywianRpIjoiNzNjOTFkOTMtODY2NS00OTQ0LThlNjMtMjA1Njc5NGM2MjZlIiwiaXNzIjoiaHR0cDovLzEwLjkuMC43Nzo2MDcwL2F1dGgvcmVhbG1zL25vYm9wYXlfd2FsbGV0X2hvbGRlciIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI2NWY3MTgxYi00YjExLTQ0MzctYTIyZC1iMTU3M2NjYTBkNTMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJub2JvcGF5X2d3Iiwic2Vzc2lvbl9zdGF0ZSI6Ijk2M2Q3OGY3LTMzY2EtNDFkMS1iNGMzLTdmMmU4ZjlhMjZlOSIsImFjciI6IjEiLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1ub2JvcGF5X3dhbGxldF9ob2xkZXIiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwic2lkIjoiOTYzZDc4ZjctMzNjYS00MWQxLWI0YzMtN2YyZThmOWEyNmU5IiwiZnBLZXlOYW1lIjoiIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJ3YWxsZXRUeXBlIjoiQ1VTVE9NRVIiLCJrY1VzZXJJZCI6IjY1ZjcxODFiLTRiMTEtNDQzNy1hMjJkLWIxNTczY2NhMGQ1MyIsInVzZXJUeXBlIjoiV0FMTEVUX1VTRVIiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiIwMTYyMTIxNTg3NyIsInVzZXJJZCI6NDQyMSwid2FsbGV0Tm8iOiIwMTYyMTIxNTg3NyJ9.GSUBnonutQMXleHSfiT8AF3jSKxYvvrFsDbn183ZUfjoO_OiOwl0YJxCjkwWJkqAGXwh3OLpz0ggtsjR6PSuAwn1xmvTmKq0JOweo-deLGW5WCRNjoT4J03AXN-pGnpEK2L8uSgvW0g6uP0kJFd1UCDnieLHbkFKTDfbHqwbZMn5XcRpH-gcPXOcwG7OTQknxJzD4hPOmFCKyQawjS0zWnhFqWNnatyjT5RNae8UNLjYZc9N3Sf6K2QtDRwhEp67P2mDIY5R_DIDuJH7NA83Aq8hyod4D65ilTCgw9U1qI4kkKSTw_OBS7nUYPJDCRyl3k7gQXKO_iimtVvfw4Fudw").
+                body(requestBody.toJSONString()).
+        when().
+                post("https://stgnpapigw.nobopay.com/api/v1/transaction/tk/send-money").
+        then().
+                statusCode(200).
+                log().all();
+    }
 }
