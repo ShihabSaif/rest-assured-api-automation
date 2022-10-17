@@ -14,6 +14,7 @@ import static org.hamcrest.Matchers.equalTo;
 public class TallyKhata {
 
     String token;
+    long requestId = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
 
     @Test(priority = 0)
     void test_login() throws ParseException {
@@ -47,13 +48,13 @@ public class TallyKhata {
     void test_loan_repayment() {
         JSONObject requestBody = new JSONObject();
 
-        requestBody.put("amount", 30);
+        requestBody.put("amount", 10);
         requestBody.put("credential", "9316");
         requestBody.put("location", null);
         requestBody.put("receiver", "460196000923");
         requestBody.put("fpAuth", false);
         requestBody.put("is_fp_auth", false);
-        requestBody.put("requestId", "2561205052103_2469");
+        requestBody.put("requestId", requestId);
         requestBody.put("externalFI", "MTB");
         requestBody.put("loanAccountNo", "460196000923");
         requestBody.put("loanCardNo", "55667788");
@@ -87,7 +88,7 @@ public class TallyKhata {
         requestBody.put("mobile_operator", "GP");
         requestBody.put("fpAuth", false);
         requestBody.put("is_fp_auth", false);
-        requestBody.put("request_id", "7665774349566_1423");
+        requestBody.put("request_id", requestId);
         requestBody.put("mobile_type", "PREPAID");
         requestBody.put("receiver_mobile", "01621215877");
         requestBody.put("receiver_name", "A.B.M.Shihab Uddin");
@@ -113,8 +114,8 @@ public class TallyKhata {
         requestBody.put("receiver", "01800000220");
         requestBody.put("fpAuth", false);
         requestBody.put("is_fp_auth", false);
-        requestBody.put("requestId", "3665714359560_4430");
-        requestBody.put("loan_amount", 20);
+        requestBody.put("request_id", requestId);
+        requestBody.put("loan_amount", 10);
         requestBody.put("merchant_wallet_no", "01800000220");
         requestBody.put("external_customer", "01765841854");
         requestBody.put("note", "supplier payment with loan ammount");
@@ -128,11 +129,11 @@ public class TallyKhata {
         when().
                 post("https://stgnpapigw.nobopay.com/api/v1/transaction/tk/payment/with/loan").
         then().
-                statusCode(400).
+                statusCode(200).
                 log().all();
     }
 
-    @Test (enabled = false, priority = 4)
+    @Test (enabled = true, priority = 4)
     void test_send_money() {
         JSONObject requestBody = new JSONObject();
 
@@ -143,9 +144,11 @@ public class TallyKhata {
         requestBody.put("receiver", "01765841854");
         requestBody.put("fpAuth", false);
         requestBody.put("is_fp_auth", false);
-        requestBody.put("request_id", "1261180002803_2469");
+        requestBody.put("request_id", requestId);
         requestBody.put("charge_flag", null);
         requestBody.put("receiver_wallet_no", "01765841854");
+
+        System.out.println("request body is : " + requestBody);
 
         given().
                 header("content-type", "application/json").
