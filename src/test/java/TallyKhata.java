@@ -7,6 +7,9 @@ import org.json.simple.parser.ParseException;
 import org.testng.annotations.Test;
 import io.restassured.response.Response;
 
+import java.io.IOException;
+import java.util.Map;
+
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -15,7 +18,7 @@ public class TallyKhata {
 
     long requestId = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
 
-    static String login() throws ParseException {
+    public String login() throws ParseException {
         JSONObject requestBody = new JSONObject();
 
         requestBody.put("app_type", "TALLYKHATA");
@@ -39,25 +42,25 @@ public class TallyKhata {
         JSONObject obj = (JSONObject) parser.parse(loginResponse);
 
         String token = "token " + (String) obj.get("token");
-        System.out.println("response is: " + token);
+        System.out.println("token is: " + token);
         return token;
     }
 
     @Test (enabled = true, priority = 1)
-    void test_loan_repayment() throws ParseException {
+    void test_loan_repayment() throws ParseException, IOException {
         JSONObject requestBody = new JSONObject();
 
-        requestBody.put("amount", 21);
-        requestBody.put("credential", "9316");
-        requestBody.put("location", null);
-        requestBody.put("receiver", "460196000923");
-        requestBody.put("fpAuth", false);
-        requestBody.put("is_fp_auth", false);
-        requestBody.put("requestId", requestId);
-        requestBody.put("externalFI", "MTB");
-        requestBody.put("loanAccountNo", "460196000923");
-        requestBody.put("loanCardNo", "55667788");
-        requestBody.put("note", null);
+        requestBody.put("amount", FileRead.envAndFile().get("amount"));
+        requestBody.put("credential", FileRead.envAndFile().get("credential"));
+        requestBody.put("location", FileRead.envAndFile().get("location"));
+        requestBody.put("receiver", FileRead.envAndFile().get("receiver"));
+        requestBody.put("fpAuth", FileRead.envAndFile().get("fpAuth"));
+        requestBody.put("is_fp_auth", FileRead.envAndFile().get("is_fp_auth"));
+        requestBody.put("requestId", FileRead.envAndFile().get("requestId"));
+        requestBody.put("externalFI", FileRead.envAndFile().get("externalFI"));
+        requestBody.put("loanAccountNo", FileRead.envAndFile().get("loanAccountNo"));
+        requestBody.put("loanCardNo", FileRead.envAndFile().get("loanCardNo"));
+        requestBody.put("note", FileRead.envAndFile().get("note"));
 
         System.out.println(" request body is : " + requestBody);
 
