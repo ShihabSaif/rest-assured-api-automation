@@ -15,6 +15,31 @@ public class LoanRepaymentInitial {
 
     long requestId = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
 
+    LoanRepaymentDTO LR;
+
+    {
+        try {
+            LR = new LoanRepaymentDTO();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public LoanRepaymentInitial() {
+
+        LR.setAmount();
+        LR.setCredential();
+        LR.setLocation();
+        LR.setReceiver();
+        LR.setFpAuth();
+        LR.setIs_fp_auth();
+        LR.setRequestId();
+        LR.setExternalFI();
+        LR.setLoanAccountNo();
+        LR.setLoanCardNo();
+        LR.setNote();
+    }
+
     public String login() throws ParseException {
         JSONObject requestBody = new JSONObject();
 
@@ -45,19 +70,6 @@ public class LoanRepaymentInitial {
     Response loan_repayment() throws ParseException, IOException {
 
         JSONObject requestBody = new JSONObject();
-
-        LoanRepaymentDTO LR = new LoanRepaymentDTO();
-        LR.setAmount();
-        LR.setCredential();
-        LR.setLocation();
-        LR.setReceiver();
-        LR.setFpAuth();
-        LR.setIs_fp_auth();
-        LR.setRequestId();
-        LR.setExternalFI();
-        LR.setLoanAccountNo();
-        LR.setLoanCardNo();
-        LR.setNote();
 
         requestBody.put("amount", LR.getAmount());
         requestBody.put("credential", LR.getCredential());
