@@ -95,6 +95,5 @@ public class DataDrivenTesting extends DataProviderForDDT {
     public static void main(String[] args) throws IOException {
         Response resp = test_excel_post02();
         System.out.println("response is " + resp.getBody().asString());
-
     }
 }

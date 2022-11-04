@@ -1,11 +1,16 @@
 package loan_repayment;
 
 import loan_repayment.LoanRepaymentDTO;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import io.restassured.response.Response;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import static io.restassured.RestAssured.get;
@@ -96,6 +101,80 @@ public class LoanRepaymentInitial {
 //        requestBody.put("note", FileRead.envAndFile().get("note"));
 
 //        System.out.println(" request body is : " + requestBody);
+
+        Response response = given().
+                header("content-type", "application/json").
+                header("Authorization", login()).
+                header("x-request-id", "1c2ea1a42bcd5c93:TK_ANDROID:15458807928059").
+                header("np-uuid", "0069a6b1-b510-443b-b51b-db84889ef9f6").
+                header("np-userref", "01621215877").
+                header("np-devicemodel", "RMX1921").
+                header("np-appversioncode", 110).
+                body(requestBody).
+        when().
+                post("https://stgnpapigw.nobopay.com/api/v1/transaction/tk/loan/repayment");
+
+        return response;
+    }
+
+    Response loan_repayment_with_excel(int num) throws ParseException, IOException {
+
+        JSONObject requestBody = new JSONObject();
+
+        String excelPath = "E:/RestAssured/RestAssuredAPITesting/data/loan_repayment.xlsx";
+
+        File excelFile = new File(excelPath);
+        FileInputStream inputData = new FileInputStream(excelFile);
+        XSSFWorkbook workbook = new XSSFWorkbook(inputData);
+        XSSFSheet firstSheet = workbook.getSheetAt(0);
+
+        DataFormatter formatter = new DataFormatter();
+
+        String amount = formatter.formatCellValue(firstSheet.getRow(num).getCell(0));
+        System.out.println(amount);
+
+        String credential = formatter.formatCellValue(firstSheet.getRow(num).getCell(1));
+        System.out.println(credential);
+
+        String location = firstSheet.getRow(num).getCell(2).getStringCellValue();
+        System.out.println(location);
+
+        String receiver = formatter.formatCellValue(firstSheet.getRow(num).getCell(3));
+        System.out.println(receiver);
+
+        String fpAuth = formatter.formatCellValue(firstSheet.getRow(num).getCell(4));
+        System.out.println(fpAuth);
+
+        String is_fp_auth = formatter.formatCellValue(firstSheet.getRow(num).getCell(5));
+        System.out.println(is_fp_auth);
+
+        String requestId = formatter.formatCellValue(firstSheet.getRow(num).getCell(6));
+        System.out.println(requestId);
+
+        String externalFI = firstSheet.getRow(num).getCell(7).getStringCellValue();
+        System.out.println(externalFI);
+
+        String loanAccountNo = formatter.formatCellValue(firstSheet.getRow(num).getCell(8));
+        System.out.println(loanAccountNo);
+
+        String loanCardNo = formatter.formatCellValue(firstSheet.getRow(num).getCell(9));
+        System.out.println(loanCardNo);
+
+        String note = firstSheet.getRow(num).getCell(10).getStringCellValue();
+        System.out.println(note);
+
+
+        requestBody.put("amount", amount);
+        requestBody.put("credential", credential);
+        requestBody.put("location", location);
+        requestBody.put("receiver", receiver);
+        requestBody.put("fpAuth", fpAuth);
+        requestBody.put("is_fp_auth", is_fp_auth);
+        requestBody.put("requestId", requestId);
+        requestBody.put("externalFI", externalFI);
+        requestBody.put("loanAccountNo", loanAccountNo);
+        requestBody.put("loanCardNo", loanCardNo);
+        requestBody.put("note", note);
 
         Response response = given().
                 header("content-type", "application/json").
