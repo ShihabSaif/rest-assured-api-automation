@@ -1,5 +1,6 @@
 package loan_repayment;
 
+import com.sun.org.glassfish.gmbal.Description;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseBody;
@@ -36,7 +37,8 @@ public class LoanRepaymentInitialTestScript {
 //        Assert.assertEquals(200, resp.getStatusCode());
     }
 
-    @Test
+    @Test()
+    @Description("loan repayment")
     public void test_loan_repayment_excel() throws ParseException, IOException {
 
         String excelPath = "E:/RestAssured/RestAssuredAPITesting/data/loan_repayment.xlsx";
@@ -69,6 +71,5 @@ public class LoanRepaymentInitialTestScript {
             resultFile = new FileOutputStream(excelFile);
             workbook.write(resultFile);
         }
-
     }
 }
