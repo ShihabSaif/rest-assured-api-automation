@@ -51,8 +51,8 @@ public class LoanRepaymentInitial {
         requestBody.put("app_type", "TALLYKHATA");
         requestBody.put("device_id", "1c2ea1a42bcd5c93");
         requestBody.put("device_type", "ANDROID");
-        requestBody.put("mobile_number", "01621215877");
-        requestBody.put("password", "9316");
+        requestBody.put("mobile_number", "01715321485");
+        requestBody.put("password", "2040");
         requestBody.put("uuid", "0069a6b1-b510-443b-b51b-db84889ef9f6");
 
         Response response = given().
@@ -87,20 +87,6 @@ public class LoanRepaymentInitial {
         requestBody.put("loanAccountNo", LR.getLoanAccountNo());
         requestBody.put("loanCardNo", LR.getLoanCardNo());
         requestBody.put("note", LR.getNote());
-
-//        requestBody.put("amount", FileRead.envAndFile().get("amount"));
-//        requestBody.put("credential", FileRead.envAndFile().get("credential"));
-//        requestBody.put("location", FileRead.envAndFile().get("location"));
-//        requestBody.put("receiver", FileRead.envAndFile().get("receiver"));
-//        requestBody.put("fpAuth", FileRead.envAndFile().get("fpAuth"));
-//        requestBody.put("is_fp_auth", FileRead.envAndFile().get("is_fp_auth"));
-//        requestBody.put("requestId", FileRead.envAndFile().get("requestId"));
-//        requestBody.put("externalFI", FileRead.envAndFile().get("externalFI"));
-//        requestBody.put("loanAccountNo", FileRead.envAndFile().get("loanAccountNo"));
-//        requestBody.put("loanCardNo", FileRead.envAndFile().get("loanCardNo"));
-//        requestBody.put("note", FileRead.envAndFile().get("note"));
-
-//        System.out.println(" request body is : " + requestBody);
 
         Response response = given().
                 header("content-type", "application/json").
