@@ -62,11 +62,41 @@ public class mobileRechargeInitialTestScript {
         return conn;
     }
 
+    public Connection NpTxnLogdbConnection() throws ClassNotFoundException, SQLException {
+        Connection conn = null;
+
+        Class.forName("org.postgresql.Driver");
+        conn = DriverManager.getConnection("jdbc:postgresql://10.9.0.77:5432/backend_db", "shihab", "shihab@123");
+
+        if (conn != null)
+        {
+            System.out.println("connection established for np txn log" + "\n");
+        }
+        else {
+            System.out.println("connection failed" + "\n");
+        }
+        return conn;
+    }
+
     public String checkStatus(String txnID) throws SQLException, ClassNotFoundException {
         Connection conn = dbConnection();
         PreparedStatement statement = null;
-        ResultSet rs;
+        ResultSet rs = null;
         statement = conn.prepareStatement("select * from top_up_info where txn_id = ?");
+        statement.setString(1, txnID);
+        rs = statement.executeQuery();
+        while (rs.next())
+        {
+            return rs.getString("status");
+        }
+        return "";
+    }
+
+    public String checkNpTxnLog(String txnID) throws SQLException, ClassNotFoundException {
+        Connection conn = NpTxnLogdbConnection();
+        PreparedStatement statement = null;
+        ResultSet rs;
+        statement = conn.prepareStatement("select * from np_txn_log where transaction_number = ?");
         statement.setString(1, txnID);
         rs = statement.executeQuery();
         while (rs.next())
@@ -89,6 +119,17 @@ public class mobileRechargeInitialTestScript {
         Thread.sleep(5000);
 
         String status = checkStatus(txnNo);
-        System.out.println("status is : " + status);
+
+        if (status.contentEquals("SUCCESS")) {
+            System.out.println("recharge is : " + status);
+        } else if (status.contentEquals("FAILED")) {
+            System.out.println("recharge is initially : " + status);
+
+            Thread.sleep(5000);
+
+            String finalStatus = checkNpTxnLog(txnNo);
+
+            System.out.println("recharge is finally : " + finalStatus);
+        }
     }
 }
