@@ -46,7 +46,7 @@ public class mobileRechargeInitialTestScript {
 //        Assert.assertEquals(200, resp.getStatusCode());
     }
 
-    public Connection dbConnection() throws ClassNotFoundException, SQLException {
+    public Connection topUpInfodbConnection() throws ClassNotFoundException, SQLException {
         Connection conn = null;
 
         Class.forName("org.postgresql.Driver");
@@ -78,8 +78,8 @@ public class mobileRechargeInitialTestScript {
         return conn;
     }
 
-    public String checkStatus(String txnID) throws SQLException, ClassNotFoundException {
-        Connection conn = dbConnection();
+    public String checktopUpInfoStatus(String txnID) throws SQLException, ClassNotFoundException {
+        Connection conn = topUpInfodbConnection();
         PreparedStatement statement = null;
         ResultSet rs = null;
         statement = conn.prepareStatement("select * from top_up_info where txn_id = ?");
@@ -107,29 +107,40 @@ public class mobileRechargeInitialTestScript {
     }
 
     @Test
-    public void topup_success_case() throws ParseException, IOException, SQLException, ClassNotFoundException, InterruptedException {
+    public void topup_success_failed_reverse_case() throws ParseException, IOException, SQLException, ClassNotFoundException, InterruptedException {
         mobileRechargeInitial tk = new mobileRechargeInitial();
         Response resp = tk.mobile_recharge();
 
-        //get specific node value from response
-        JsonPath jsp = resp.jsonPath();
-        String txnNo = jsp.get("transactionNumber");
-        System.out.println(txnNo);
+        if(resp.getStatusCode() == 200)
+        {
+            System.out.println("top up producer up");
 
-        Thread.sleep(5000);
-
-        String status = checkStatus(txnNo);
-
-        if (status.contentEquals("SUCCESS")) {
-            System.out.println("recharge is : " + status);
-        } else if (status.contentEquals("FAILED")) {
-            System.out.println("recharge is initially : " + status);
+            //get transactionNumber node value from response
+            JsonPath jsp = resp.jsonPath();
+            String txnNo = jsp.get("transactionNumber");
+            System.out.println(txnNo);
 
             Thread.sleep(5000);
 
-            String finalStatus = checkNpTxnLog(txnNo);
+            String status = checktopUpInfoStatus(txnNo);
 
-            System.out.println("recharge is finally : " + finalStatus);
+            if(status.isEmpty()) // means no row exists in top_up_info table for this txn_id
+            {
+                System.out.println("topup consumer down");
+            }
+            else if (status.contentEquals("SUCCESS")) {
+                System.out.println("recharge is : " + status); //topup succeeded
+            } else if (status.contentEquals("FAILED")) {
+                System.out.println("recharge is initially : " + status); //topup failed initially
+                Thread.sleep(5000);
+                String finalStatus = checkNpTxnLog(txnNo); // now checking whether it has been reversed
+                System.out.println("recharge later : " + finalStatus);
+            }
+        }
+
+        else if(resp.getStatusCode() == 404)
+        {
+            System.out.println("top up producer down");
         }
     }
 }
