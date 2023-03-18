@@ -3,6 +3,7 @@ package mobile_recharge;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.Random;
 
 public class mobileRechargeDTO {
     String receiver_mobile;
@@ -13,7 +14,7 @@ public class mobileRechargeDTO {
     String is_fp_auth;
     String credential;
     String amount;
-    String request_id;
+    Long request_id;
 
     public static Properties propMain = new Properties();
 
@@ -25,7 +26,9 @@ public class mobileRechargeDTO {
     public String prop_is_fp_auth;
     public String prop_credential;
     public String prop_amount;
-    public String prop_request_id;
+    public Long prop_request_id;
+
+    Random r = new Random();
 
     public mobileRechargeDTO() throws IOException {
         FileInputStream fisDev = new FileInputStream(System.getProperty("user.dir") + "/src/test/java/mobile_recharge/mobile_recharge.properties");
@@ -39,7 +42,7 @@ public class mobileRechargeDTO {
         prop_is_fp_auth = propMain.getProperty("is_fp_auth");
         prop_credential = propMain.getProperty("credential");
         prop_amount = propMain.getProperty("amount");
-        prop_request_id = propMain.getProperty("request_id");
+        prop_request_id = r.nextInt(1_000_000_000) + (r.nextInt(90) + 10) * 1_000_000_000L;
     }
 
     public String getReceiver_mobile() {
@@ -106,7 +109,7 @@ public class mobileRechargeDTO {
         this.amount = prop_amount;
     }
 
-    public String getRequest_id() {
+    public Long getRequest_id() {
         return request_id;
     }
 
