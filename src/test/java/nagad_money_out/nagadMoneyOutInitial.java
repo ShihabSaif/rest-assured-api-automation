@@ -38,14 +38,14 @@ public class nagadMoneyOutInitial {
         requestBody.put("device_id", "1c2ea1a42bcd5c93");
         requestBody.put("device_type", "ANDROID");
         requestBody.put("mobile_number", "01715321485");
-        requestBody.put("password", "2040");
+        requestBody.put("password", "9876");
         requestBody.put("uuid", "0069a6b1-b510-443b-b51b-db84889ef9f6");
 
         Response response = given().
-                header("x-auth-token", "4lSE5BTGIi9oiwjhLC5PDDXJ9Rdlof0Z3hpwMLZL").
+                header("x-auth-token", "V9ox1BcmpqGZWuAHoFJGm7ovq2eY42Ja1cyAvuwo").
                 header("content-type", "application/json").
                 header("Authorization", "Basic cHJvZ290aV9xYTpwcjBnMHQxQDIwMnR3bw==").
-                header("x-device-id", "30c3f35c-d6b2-47b4-ba86-b81eea6af4a2").
+//                header("x-device-id", "30c3f35c-d6b2-47b4-ba86-b81eea6af4a2").
                 body(requestBody.toJSONString()).
                 when().
                 post("https://stgqa.tallykhata.com/wallet/api/tp-proxy/user/login");
