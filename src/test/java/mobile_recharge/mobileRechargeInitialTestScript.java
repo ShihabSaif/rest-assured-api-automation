@@ -19,15 +19,71 @@ import java.sql.*;
 
 public class mobileRechargeInitialTestScript {
 
+    rechargeDBConnection rb = new rechargeDBConnection();
+
+    public String checktopUpInfoStatus(String txnID) throws SQLException, ClassNotFoundException {
+        Connection conn = rb.topUpInfodbConnection();
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+        statement = conn.prepareStatement("select * from top_up_info where txn_id = ?");
+        statement.setString(1, txnID);
+        rs = statement.executeQuery();
+        while (rs.next())
+        {
+            return rs.getString("status");
+        }
+        return "";
+    }
+
+    public String checkNpTxnLogStatus(String txnID) throws SQLException, ClassNotFoundException {
+        Connection conn = rb.NpTxnLogdbConnection();
+        PreparedStatement statement = null;
+        ResultSet rs;
+        statement = conn.prepareStatement("select * from np_txn_log where transaction_number = ?");
+        statement.setString(1, txnID);
+        rs = statement.executeQuery();
+        while (rs.next())
+        {
+            return rs.getString("status");
+        }
+        return "";
+    }
+
     @Test
-    public void test_top_up_producer() throws ParseException, IOException {
+    public void topup_multiple_case() throws ParseException, IOException, SQLException, ClassNotFoundException, InterruptedException {
         mobileRechargeInitial tk = new mobileRechargeInitial();
         Response resp = tk.mobile_recharge();
 
         if(resp.getStatusCode() == 200)
         {
             System.out.println("top up producer up");
+
+            //get transactionNumber node value from response
+            JsonPath jsp = resp.jsonPath();
+            String txnNo = jsp.get("transactionNumber");
+            System.out.println(txnNo);
+            Thread.sleep(5000);
+            String status = checktopUpInfoStatus(txnNo);
+
+            if(status.isEmpty()) // means no row exists in top_up_info table for this txn_id
+            {
+                System.out.println("topup consumer down");
+            }
+
+            else if (status.contentEquals("SUCCESS"))
+            {
+                System.out.println("recharge is : " + status); //topup succeeded
+            }
+
+            else if (status.contentEquals("FAILED"))
+            {
+                System.out.println("recharge is initially : " + status); //topup failed initially
+                Thread.sleep(5000);
+                String finalStatus = checkNpTxnLogStatus(txnNo); // now checking whether it has been reversed in np_txn_log table
+                System.out.println("recharge later : " + finalStatus);
+            }
         }
+
         else if(resp.getStatusCode() == 404)
         {
             System.out.println("top up producer down");
@@ -44,103 +100,5 @@ public class mobileRechargeInitialTestScript {
 //        System.out.println(finalRespBody);
 
 //        Assert.assertEquals(200, resp.getStatusCode());
-    }
-
-    public Connection topUpInfodbConnection() throws ClassNotFoundException, SQLException {
-        Connection conn = null;
-
-        Class.forName("org.postgresql.Driver");
-        conn = DriverManager.getConnection("jdbc:postgresql://10.9.0.77:5432/topup_service", "shihab", "shihab@123");
-
-        if (conn != null)
-        {
-            System.out.println("connection established" + "\n");
-        }
-        else {
-            System.out.println("connection failed" + "\n");
-        }
-        return conn;
-    }
-
-    public Connection NpTxnLogdbConnection() throws ClassNotFoundException, SQLException {
-        Connection conn = null;
-
-        Class.forName("org.postgresql.Driver");
-        conn = DriverManager.getConnection("jdbc:postgresql://10.9.0.77:5432/backend_db", "shihab", "shihab@123");
-
-        if (conn != null)
-        {
-            System.out.println("connection established for np txn log" + "\n");
-        }
-        else {
-            System.out.println("connection failed" + "\n");
-        }
-        return conn;
-    }
-
-    public String checktopUpInfoStatus(String txnID) throws SQLException, ClassNotFoundException {
-        Connection conn = topUpInfodbConnection();
-        PreparedStatement statement = null;
-        ResultSet rs = null;
-        statement = conn.prepareStatement("select * from top_up_info where txn_id = ?");
-        statement.setString(1, txnID);
-        rs = statement.executeQuery();
-        while (rs.next())
-        {
-            return rs.getString("status");
-        }
-        return "";
-    }
-
-    public String checkNpTxnLog(String txnID) throws SQLException, ClassNotFoundException {
-        Connection conn = NpTxnLogdbConnection();
-        PreparedStatement statement = null;
-        ResultSet rs;
-        statement = conn.prepareStatement("select * from np_txn_log where transaction_number = ?");
-        statement.setString(1, txnID);
-        rs = statement.executeQuery();
-        while (rs.next())
-        {
-            return rs.getString("status");
-        }
-        return "";
-    }
-
-    @Test
-    public void topup_success_failed_reverse_case() throws ParseException, IOException, SQLException, ClassNotFoundException, InterruptedException {
-        mobileRechargeInitial tk = new mobileRechargeInitial();
-        Response resp = tk.mobile_recharge();
-
-        if(resp.getStatusCode() == 200)
-        {
-            System.out.println("top up producer up");
-
-            //get transactionNumber node value from response
-            JsonPath jsp = resp.jsonPath();
-            String txnNo = jsp.get("transactionNumber");
-            System.out.println(txnNo);
-
-            Thread.sleep(5000);
-
-            String status = checktopUpInfoStatus(txnNo);
-
-            if(status.isEmpty()) // means no row exists in top_up_info table for this txn_id
-            {
-                System.out.println("topup consumer down");
-            }
-            else if (status.contentEquals("SUCCESS")) {
-                System.out.println("recharge is : " + status); //topup succeeded
-            } else if (status.contentEquals("FAILED")) {
-                System.out.println("recharge is initially : " + status); //topup failed initially
-                Thread.sleep(5000);
-                String finalStatus = checkNpTxnLog(txnNo); // now checking whether it has been reversed
-                System.out.println("recharge later : " + finalStatus);
-            }
-        }
-
-        else if(resp.getStatusCode() == 404)
-        {
-            System.out.println("top up producer down");
-        }
     }
 }
