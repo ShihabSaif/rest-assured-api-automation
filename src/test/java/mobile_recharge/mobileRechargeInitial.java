@@ -8,6 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -67,7 +68,7 @@ public class mobileRechargeInitial {
         return token;
     }
 
-    Response mobile_recharge() throws ParseException, IOException {
+    Response mobile_recharge(String loginToken) throws ParseException, IOException {
 
         JSONObject requestBody = new JSONObject();
 
