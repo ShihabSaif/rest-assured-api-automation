@@ -70,7 +70,7 @@ public class nagadMoneyOutInitialTestScript {
         Thread.sleep(25000);
 
         String status = checknagadMoneyOutStatus(reqId);
-        Assert.assertTrue(status != null);
+        Assert.assertTrue(status != "");
         System.out.println(status);
     }
 

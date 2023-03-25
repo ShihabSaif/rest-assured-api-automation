@@ -84,7 +84,7 @@ public class mobileRechargeInitial {
 
         Response response = given().
                 header("content-type", "application/json").
-                header("Authorization", login()).
+                header("Authorization", loginToken).
                 body(requestBody).
         when().
                 post("http://10.9.0.77:6060/topup-producer/api/v1/transaction/recharge-mobile");

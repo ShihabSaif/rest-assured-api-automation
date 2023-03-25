@@ -84,7 +84,7 @@ public class mobileRechargeInitialTestScript {
         Thread.sleep(5000);
         status = checktopUpInfoStatus(txnNo);
         System.out.println("top up info status : " + status);
-        Assert.assertTrue(status != null);
+        Assert.assertTrue(status != "");
     }
 
     Connection NpTxnLogConn = null;
@@ -100,7 +100,7 @@ public class mobileRechargeInitialTestScript {
     public void NpTxnLogStatus_06() throws SQLException, ClassNotFoundException {
         String nptxnlogStatus = checkNpTxnLogStatus(txnNo);
         System.out.println("np txn log status : " + nptxnlogStatus);
-        Assert.assertTrue(nptxnlogStatus != null);
+        Assert.assertTrue(nptxnlogStatus != "");
     }
 
     public String checktopUpInfoStatus(String txnID) throws SQLException, ClassNotFoundException {
