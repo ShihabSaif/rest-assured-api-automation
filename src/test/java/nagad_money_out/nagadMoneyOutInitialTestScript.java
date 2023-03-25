@@ -2,8 +2,6 @@ package nagad_money_out;
 
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import io.restassured.response.ResponseBody;
-import mobile_recharge.mobileRechargeInitial;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -47,20 +45,6 @@ public class nagadMoneyOutInitialTestScript {
         Assert.assertEquals(response.getStatusCode(),  200);
     }
 
-
-    public String checknagadMoneyOutStatus(String reqID) throws SQLException, ClassNotFoundException {
-        PreparedStatement statement = null;
-        ResultSet rs = null;
-        statement = conn.prepareStatement("select * from transaction_info where request_id = ?");
-        statement.setString(1, reqID);
-        rs = statement.executeQuery();
-        while (rs.next())
-        {
-            return rs.getString("status");
-        }
-        return "";
-    }
-
     Response resp;
     @Test(priority = 1)
     public void nagadMoneyOutProducer_02() throws ParseException, IOException {
@@ -83,46 +67,24 @@ public class nagadMoneyOutInitialTestScript {
         JsonPath jsp = resp.jsonPath();
         String reqId = jsp.get("requestId");
 
-        Thread.sleep(20000);
+        Thread.sleep(25000);
 
         String status = checknagadMoneyOutStatus(reqId);
         Assert.assertTrue(status != null);
         System.out.println(status);
     }
-//    @Test
-//    public void test_nagad_money_out() throws ParseException, IOException, SQLException, ClassNotFoundException, InterruptedException {
-//
-//        if(resp.getStatusCode() == 200)
-//        {
-//            System.out.println("fi producer up");
-//
-//            JsonPath jsp = resp.jsonPath();
-//            String reqId = jsp.get("requestId");      //get requestId from response
-//
-//            System.out.println(reqId);
-//
-//            Thread.sleep(20000);
-//
-//            String status = checknagadMoneyOutStatus(reqId);
-//            if (status.contentEquals("PENDING"))
-//            {
-//                System.out.println("fi consumer is down");
-//            }
-//
-//            else if (status.contentEquals("SUCCESS"))
-//            {
-//                System.out.println("nagad money out succeeded");
-//            }
-//
-//            else if(status.contentEquals("REVERSE"))
-//            {
-//                System.out.println("nagad money out is being reversed");
-//            }
-//        }
-//        else if(resp.getStatusCode() == 404)
-//        {
-//            System.out.println("fi producer down");
-//        }
-//    }
+
+    public String checknagadMoneyOutStatus(String reqID) throws SQLException, ClassNotFoundException {
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+        statement = conn.prepareStatement("select * from transaction_info where request_id = ?");
+        statement.setString(1, reqID);
+        rs = statement.executeQuery();
+        while (rs.next())
+        {
+            return rs.getString("status");
+        }
+        return "";
+    }
 
 }
